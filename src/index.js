@@ -3,7 +3,7 @@ import * as echarts from 'echarts';
 import { getResult } from './b.js';
 import './assets/index.css';
 import src from './assets/webpack.png';
-console.log(1);
+console.log(2);
 const result = getResult();
 const a = 1;
 console.log(result);
