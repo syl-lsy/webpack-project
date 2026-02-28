@@ -1,0 +1,14 @@
+import './page/event.js';
+import * as echarts from 'echarts';
+import { getResult } from './b.js';
+import './assets/index.css';
+import src from './assets/webpack.png';
+const result = getResult();
+const a = 1;
+console.log(result);
+const a1 = 2;
+console.log('index Module');
+const img = document.createElement('img');
+img.src = src;
+document.body.appendChild(img);
+echarts.init(document.getElementById('main')).setOption({});
