@@ -1,6 +1,7 @@
 const MyPlugin = require('./plugins/myPlugin.js');
 const FileListPlugin = require('./plugins/fileListPlugin.js');
 const path = require('path');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MinCssExtractPlugin = require('mini-css-extract-plugin');
 const PurgeCSSPlugin = require('purgecss-webpack-plugin');
 const globAll = require('glob-all');
@@ -35,7 +36,16 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: [MinCssExtractPlugin.loader, 'css-loader'],
+        use: [
+          MinCssExtractPlugin.loader,
+          'style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              modules: true,
+            },
+          },
+        ],
       },
       {
         test: /\.(png)|(jpg)|(jpeg)|(gif)$/,
@@ -55,10 +65,29 @@ module.exports = {
           },
         ],
       },
+      {
+        test: /\.(png)|(jp?eg)|(gif)|(svg)(\?.*)$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 3000,
+              name: 'imgs/[name].[contenthash:5].[ext]',
+            },
+          },
+          {
+            loader: 'file-loader',
+            options: {
+              name: 'imgs/[name].[contenthash:5].[ext]',
+            },
+          },
+        ],
+      },
     ],
     noParse: /a\.js$/, // 不需要解析的文件,内部的require()不会生效
   },
   plugins: [
+    new CleanWebpackPlugin(),
     new MinCssExtractPlugin({
       filename: '[name].[contenthash:5].css', // 打包后的文件名
     }),

@@ -1,6 +1,6 @@
 ### webpack4与webpack5的区别
 1.webpack5新增了一个模块联邦的功能，可以共享模块，可以跨项目共享模块，可以解决微前端的问题
-2.资源模块Assets模块，不需要webpack4的url-loader,file-loader,raw-loader等
+2.资源模块Assets模块，不需要webpack4的url-loader,file-loader,raw-loader等 分别替换成了asset/inline, asset/resource, asset/source
 3.持久化缓存，将缓存写入磁盘，提高读写和编译速度
 4.Tree-shaking的增强，能更好更精准的找到未使用的代码，最大程度的减小文件的体积。
 
@@ -159,3 +159,59 @@ plugins: [
     })
 ]
 ```
+### webpack解决路径问题使用publicPath
+1.在webpack.config.js中配置
+```js
+output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'js/[name].[hash].js',
+    publicPath: '/'
+}
+```
+2.在index.html中引入资源时使用publicPath
+```html
+<script src="/js/main.js"></script>
+```
+### webpack内置插件
+1.DefinePlugin：用于定义全局变量，可以在代码中直接使用这些变量，而不需要通过import等方式引入。
+```js
+const webpack = require('webpack');
+new webpack.DefinePlugin({
+    'process.env.NODE_ENV': JSON.stringify('production')
+})
+```
+2.BannerPlugin：用于在打包后的文件头部添加注释，可以用于添加版权信息、版本号等。
+```js
+const webpack = require('webpack');
+new webpack.BannerPlugin('This is my webpack project')
+```
+3.ProvidePlugin：用于自动加载模块，当使用某个模块时，会自动加载指定的模块。
+```js
+const webpack = require('webpack');
+new webpack.ProvidePlugin({
+    $: 'jquery',
+    _: 'lodash'
+})
+```
+4.HotModuleReplacementPlugin：用于实现热更新，可以在不刷新页面的情况下更新模块。
+```js
+const webpack = require('webpack');
+devServer: {
+    hot: true // 需要配合其使用
+}
+new webpack.HotModuleReplacementPlugin()
+```
+5.DllPlugin：用于将第三方库打包成单独的文件，可以加快打包速度。
+```js
+const webpack = require('webpack');
+new webpack.DllPlugin({
+    path: path.resolve(__dirname, 'dll/[name]-manifest.json'),
+    name: '[name]'
+})
+```
+6.DllReferencePlugin：用于引用已经打包好的第三方库，可以加快打包速度。
+```js
+const webpack = require('webpack');
+new webpack.DllReferencePlugin({
+    manifest: require('./dll/jquery-manifest.json')
+})

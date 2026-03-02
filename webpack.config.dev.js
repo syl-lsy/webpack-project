@@ -5,7 +5,6 @@ const fs = require('fs');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const distFile = 'distFileDev';
 const distPath = path.join(__dirname, distFile);
 const webpack = require('webpack');
@@ -25,16 +24,15 @@ module.exports = merge(baseWebpackConfig, {
   devServer: {
     open: true,
     port: 8080,
-    hot: true, // 模块热更新出口
+    // hot: true, // 模块热更新出口
   },
   // Plugins
   plugins: [
-    new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: './public/index.html',
       filename: 'devIndex.html',
     }),
-    new webpack.HotModuleReplacementPlugin(), // 启动模块热更新
+    // new webpack.HotModuleReplacementPlugin(), // 启动模块热更新
     new webpack.DllReferencePlugin({
       manifest: require('./dll/jquery-manifest.json'),
     }),

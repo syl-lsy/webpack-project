@@ -2,7 +2,6 @@ const { merge } = require('webpack-merge');
 const path = require('path');
 const baseWebpackConfig = require('./webpack.config.base');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const webpack = require('webpack');
@@ -14,20 +13,19 @@ module.exports = merge(baseWebpackConfig, {
   output: {
     filename: '[name].[contenthash:8].js', // 打包后的文件名
     path: path.resolve(__dirname, 'dist'), // 打包后的文件存放路径
-    // clean: true, // 打包前清空dist文件夹
+    // clean: true, // 打包前清空dist文件夹 只适用webpack5，webpack4使用clean-webpack-plugin
   },
   plugins: [
-    new CleanWebpackPlugin(), // 打包前清空dist文件夹
     new HtmlWebpackPlugin({
       template: './public/index.html',
       filename: 'index.html',
     }),
-    // new webpack.DllReferencePlugin({
-    //   manifest: require('./dll/jquery-manifest.json'),
-    // }),
-    // new webpack.DllReferencePlugin({
-    //   manifest: require('./dll/lodash-manifest.json'),
-    // }),
+    new webpack.DllReferencePlugin({
+      manifest: require('./dll/jquery-manifest.json'),
+    }),
+    new webpack.DllReferencePlugin({
+      manifest: require('./dll/lodash-manifest.json'),
+    }),
     new WebpackBundleAnalyzerPlugin(),
     new CompressWebpackPlugin({
       test: /\.(js|css)$/, // 匹配文件名
